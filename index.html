@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Hansika</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:radial-gradient(circle at top,#160b1a,#000);
+  color:#fff;
+  font-family:'Poppins',sans-serif;
+  height:100vh;
+  overflow:hidden;
+}
+
+.screen{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  padding:40px;
+  opacity:0;
+  pointer-events:none;
+  transition:1.2s ease;
+}
+
+.screen.active{
+  opacity:1;
+  pointer-events:auto;
+}
+
+h1,h2{font-family:'Playfair Display',serif}
+h1{font-size:2.6rem}
+p{opacity:.88;line-height:1.9;margin-top:22px}
+
+button{
+  margin-top:42px;
+  padding:14px 42px;
+  border:none;
+  border-radius:40px;
+  background:#ff7aa2;
+  color:#000;
+  font-size:1rem;
+  cursor:pointer;
+}
+
+.hold{
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  border:2px solid rgba(255,122,162,.6);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-top:45px;
+  font-size:2rem;
+  animation:pulse 2.5s infinite;
+}
+
+@keyframes pulse{
+  50%{transform:scale(1.08)}
+}
+
+.hidden{
+  opacity:0;
+  transition:2s ease;
+}
+.hidden.show{opacity:1}
+</style>
+</head>
+
+<body>
+
+<audio id="music" src="music.mp3" loop></audio>
+
+<!-- SCREEN 1 -->
+<div class="screen active">
+  <h1>Hansika</h1>
+  <p>
+    This isn’t a message.<br>
+    It’s a quiet moment meant only for you.
+  </p>
+  <button onclick="next()">Enter</button>
+</div>
+
+<!-- SCREEN 2 -->
+<div class="screen">
+  <p>
+    Let’s not rush.<br>
+    Some feelings deserve time to arrive.
+  </p>
+  <button onclick="next()">Slow down</button>
+</div>
+
+<!-- SCREEN 3 (HOLD + FALLBACK) -->
+<div class="screen">
+  <p>
+    Hold your finger here.<br>
+    Just for a few seconds.
+  </p>
+  <div class="hold" id="hold">🤍</div>
+  <button id="skipHold" style="display:none;margin-top:30px" onclick="next()">
+    Continue
+  </button>
+</div>
+
+<!-- SCREEN 4 -->
+<div class="screen">
+  <p>
+    If I were standing in front of you right now…<br>
+    this is where I’d stop.
+  </p>
+  <button onclick="next()">Stay here</button>
+</div>
+
+<!-- SCREEN 5 -->
+<div class="screen">
+  <p>
+    I wouldn’t rush the kiss.<br>
+    I’d let the moment breathe.<br><br>
+    Because closeness isn’t about speed.<br>
+    It’s about comfort.
+  </p>
+  <button onclick="next()">I feel it</button>
+</div>
+
+<!-- SCREEN 6 -->
+<div class="screen">
+  <h2>Happy Kiss Day 💋</h2>
+  <p>
+    I’m saving the real one.<br>
+    For when distance no longer exists.
+  </p>
+
+  <p id="secret" class="hidden" style="margin-top:50px">
+    And when it happens…<br>
+    it won’t need words.
+  </p>
+
+  <p style="margin-top:40px;opacity:.6">— Daksh</p>
+</div>
+
+<script>
+let current = 0;
+const screens = document.querySelectorAll('.screen');
+const music = document.getElementById("music");
+music.volume = 0.22;
+
+function next(){
+  screens[current].classList.remove('active');
+  current++;
+  screens[current].classList.add('active');
+
+  if(current === 1) fadeMusic();
+  if(current === 2) setupHold();
+  if(current === 5) revealSecret();
+}
+
+function fadeMusic(){
+  music.play();
+  let v = 0;
+  const fade = setInterval(()=>{
+    if(v < 0.22){
+      v += 0.01;
+      music.volume = v;
+    } else clearInterval(fade);
+  },120);
+}
+
+function setupHold(){
+  let timer;
+  const hold = document.getElementById("hold");
+  const skip = document.getElementById("skipHold");
+
+  const start = ()=>{
+    timer = setTimeout(()=>next(),3000);
+  };
+
+  const cancel = ()=>{
+    clearTimeout(timer);
+  };
+
+  hold.addEventListener("touchstart",start);
+  hold.addEventListener("mousedown",start);
+  hold.addEventListener("touchend",cancel);
+  hold.addEventListener("mouseup",cancel);
+
+  // fallback button if hold doesn't trigger
+  setTimeout(()=>{
+    skip.style.display="inline-block";
+  },4000);
+}
+
+function revealSecret(){
+  setTimeout(()=>{
+    document.getElementById("secret").classList.add("show");
+  },3000);
+}
+</script>
+
+</body>
+</html>
